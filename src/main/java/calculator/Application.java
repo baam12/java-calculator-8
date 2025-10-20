@@ -17,19 +17,23 @@ public class Application {
 
         if (input.startsWith("//")) {
             int newLineIndex = input.indexOf("\n");
-            if (newLineIndex < 0) {
-                throw new IllegalArgumentException();
+
+            String customDelimiter;
+            String numbers;
+
+            if (newLineIndex >= 0) {
+                customDelimiter = input.substring(2, newLineIndex);
+                numbers = input.substring(newLineIndex + 1);
+            } else {
+                customDelimiter = input.substring(2);
+                String secondLine = Console.readLine();
+                if (secondLine == null) throw new IllegalArgumentException();
+                numbers = secondLine;
             }
 
-            String customDelimiter = input.substring(2, newLineIndex);
-            if (customDelimiter.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-            if (customDelimiter.matches("-?\\d+")) {
-                throw new IllegalArgumentException();
-            }
+            if (customDelimiter.isEmpty() || customDelimiter.isBlank()) throw new IllegalArgumentException();
+            if (customDelimiter.matches("-?\\d+")) throw new IllegalArgumentException();
 
-            String numbers = input.substring(newLineIndex + 1);
             tokens = numbers.split(Pattern.quote(customDelimiter), -1);
         } else {
             tokens = input.split("[,:]", -1);
@@ -37,14 +41,9 @@ public class Application {
 
         int sum = 0;
         for (String raw : tokens) {
-            if (raw == null) {
-                throw new IllegalArgumentException();
-            }
-
+            if (raw == null) throw new IllegalArgumentException();
             String token = raw.trim();
-            if (token.isEmpty()) { 
-                throw new IllegalArgumentException();
-            }
+            if (token.isEmpty()) throw new IllegalArgumentException();
 
             final int number;
             try {
@@ -52,9 +51,7 @@ public class Application {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException();
             }
-            if (number <= 0) { 
-                throw new IllegalArgumentException();
-            }
+            if (number <= 0) throw new IllegalArgumentException();
 
             sum += number;
         }
